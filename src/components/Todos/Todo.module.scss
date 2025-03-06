@@ -1,0 +1,80 @@
+// Определение переменных для цветов
+$primary-color: rgb(2, 57, 94);
+$border-color: rgb(70, 61, 61);
+$icon-color: rgb(230, 189, 7);
+$completed-color: gray;
+$hover-red: rgb(221, 0, 0);
+$hover-green: rgb(35, 190, 0);
+$background-color: aliceblue;
+
+.todo {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  margin: 15px auto;
+  font-size: 1.5rem;
+  border-radius: 5px;
+  border: 2px solid $border-color;
+  color: $primary-color;
+  background-color: $background-color;
+
+  max-width: 85%;
+  width: 100%;
+
+  &Text {
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &Icon {
+    font-size: 1.8rem;
+    margin-right: 10px;
+    color: $icon-color;
+  }
+
+  &.completedTodo {
+    background-color: unset;
+    color: $completed-color;
+    border-color: $completed-color;
+
+    .date {
+      color: $completed-color;
+    }
+
+    .todoIcon,
+    .trashFillIcon,
+    .checkIcon {
+      color: $completed-color;
+    }
+  }
+
+  .trashFillIcon,
+  .checkIcon {
+    padding: 0 7px;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+
+    &:hover {
+      transform: scale(1.3);
+
+      &.trashFillIcon {
+        color: $hover-red;
+      }
+
+      &.checkIcon {
+        color: $hover-green;
+      }
+    }
+  }
+
+  .date {
+    font-size: large;
+    color: $primary-color;
+    margin-left: 5px;
+    margin-right: 10px;
+    user-select: none; // Поддержка всех браузеров
+  }
+}

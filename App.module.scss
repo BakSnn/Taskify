@@ -1,0 +1,39 @@
+.app {
+  text-align: center;
+  color: white;
+  padding: 25px;
+}
+.authoried {
+  display: flex;
+  text-align: center;
+  font-size: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  &__bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  &__button {
+    min-width: 40px;
+    font-family: inherit;
+    appearance: none;
+    border: 0;
+    border-radius: 5px;
+    background: rgba(0, 255, 98, 0.377);
+    color: #fff;
+    padding: 4px 8px;
+    margin-left: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 255, 98, 0.568);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px #cbd6ee;
+    }
+  }
+}
