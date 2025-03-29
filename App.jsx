@@ -16,6 +16,7 @@ import TodosActions from "./src/components/Todos/TodosActions";
 import Clock from "./src/components/Clock/Clock";
 import Login from "./src/components/Login/Login";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { writeBatch,serverTimestamp} from "firebase/firestore";
 
 import styles from "./App.module.scss";
 
@@ -30,16 +31,13 @@ function App() {
 
       if (currentUser) {
         const fetchTodos = async () => {
-       
-          const q = query(
-            collection(db, "users", currentUser.uid, "todos") 
-          );
+          const q = query(collection(db, "users", currentUser.uid, "todos"));
           const querySnapshot = await getDocs(q);
           const todosArray = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
-          setTodos(todosArray);
+          setTodos(todosArray.sort((a, b) => a.createdAt - b.createdAt)); // Сортируем после загрузки данных
         };
         fetchTodos();
       } else {
@@ -55,10 +53,10 @@ function App() {
         text,
         isCompleted: false,
         userId: user.uid,
+        createdAt: serverTimestamp(),
       };
 
       try {
-    
         const docRef = await addDoc(
           collection(db, "users", user.uid, "todos"),
           newTodo
@@ -74,7 +72,7 @@ function App() {
   const deleteTodoHandler = async (id) => {
     try {
       await deleteDoc(doc(db, "users", user.uid, "todos", id));
-      setTodos(todos.filter((todo) => todo.id !== id));
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
     } catch (e) {
       console.error("Error deleting todo: ", e);
     }
@@ -87,10 +85,50 @@ function App() {
       isCompleted: !todoToUpdate.isCompleted,
     };
 
-    const todoRef = doc(db, "users", user.uid, "todos", id);
-    await updateDoc(todoRef, updatedTodo);
+    try {
+      await updateDoc(doc(db, "users", user.uid, "todos", id), updatedTodo);
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id
+            ? { ...todo, isCompleted: updatedTodo.isCompleted }
+            : todo
+        )
+      );
+    } catch (e) {
+      console.error("Error updating todo: ", e);
+    }
+  };
 
-    setTodos(todos.map((todo) => (todo.id === id ? updatedTodo : todo)));
+  const deleteCompletedTodos = async () => {
+    const batch = writeBatch(db);
+    const completedTodos = todos.filter((todo) => todo.isCompleted);
+
+    completedTodos.forEach((todo) => {
+      const todoRef = doc(db, "users", user.uid, "todos", todo.id);
+      batch.delete(todoRef);
+    });
+
+    try {
+      await batch.commit();
+      setTodos((prevTodos) => prevTodos.filter((todo) => !todo.isCompleted));
+    } catch (e) {
+      console.error("Error deleting completed todos: ", e);
+    }
+  };
+
+  const resetTodos = async () => {
+    const batch = writeBatch(db);
+    todos.forEach((todo) => {
+      const todoRef = doc(db, "users", user.uid, "todos", todo.id);
+      batch.delete(todoRef);
+    });
+
+    try {
+      await batch.commit();
+      setTodos([]);
+    } catch (e) {
+      console.error("Error resetting todos: ", e);
+    }
   };
 
   return (
@@ -114,10 +152,8 @@ function App() {
           <TodoForm addTodo={addTodoHandler} />
           <TodosActions
             todos={todos}
-            resetTodos={() => setTodos([])}
-            deleteCompletedTodos={() =>
-              setTodos(todos.filter((todo) => !todo.isCompleted))
-            }
+            resetTodos={resetTodos}
+            deleteCompletedTodos={deleteCompletedTodos}
             completedTodosCount={
               todos.filter((todo) => todo.isCompleted).length
             }
