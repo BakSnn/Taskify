@@ -1,0 +1,83 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  width: 100%;
+}
+.login {
+  background-color: #001f5c;
+  color: white;
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      outline: none;
+
+      &:focus {
+        border-color: rgba(0, 255, 98, 0.377);
+      }
+    }
+
+    button[type="submit"] {
+      padding: 12px;
+      font-size: 16px;
+      color: white;
+      background-color: rgba(0, 255, 98, 0.377);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: rgba(0, 255, 98, 0.568);
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 4px #cbd6ee;
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  button[type="button"] {
+    margin-top: 15px;
+    font-size: 14px;
+    color: rgba(0, 255, 98, 0.377);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: rgba(0, 255, 98, 0.568);
+    }
+  }
+}
