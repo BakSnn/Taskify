@@ -1,5 +1,5 @@
 import Todo from './Todo'
-import styles from './TodoList.module.css'
+import styles from './TodoList.module.scss'
 function TodoList({ todos, deleteTodo, toggleTodo, countCompleted }) {
   return (
     <div className={styles.todoListContainer}>
