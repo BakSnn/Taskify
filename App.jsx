@@ -148,7 +148,7 @@ function App() {
             </div>
           </div>
 
-          <h1>Todo App List</h1>
+          <h1>Taskify</h1>
           <TodoForm addTodo={addTodoHandler} />
           <TodosActions
             todos={todos}
